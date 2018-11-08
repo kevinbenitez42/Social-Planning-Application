@@ -1,0 +1,250 @@
+
+#side_menu {
+  font-size: 25px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: bold;
+  background-color: rgb(245,245,220,.9);
+  color: black;
+  width: 0px;
+  height: 100%;
+  transition: 500ms;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+#side_menu .fas {
+  top: 10px;
+  left: 10px;
+  position: fixed;
+  transition: 500ms;
+  width: 25px;
+  height:25px;
+}
+
+@keyframes spin {
+       from {
+           transform: rotate(0deg);
+       } to {
+           transform: rotate(360deg);
+       }
+   }
+
+#side_menu .fa-plus{
+  font-size:18px;
+  position: static;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+#side_menu .fa-plus:hover{
+  transition-duration: 200ms;
+  transform: scale(1.10);
+  opacity: .5;
+}
+
+#addRoomModal{
+  position: fixed;
+  z-index: 2;
+  height: 100%;
+  width: 100%;
+}
+
+#addRoomModal #addRoomForm{
+  background-color : rgb(255,255,255);
+  height :  500px;
+  width  :  400px;
+  position: absolute;
+  top : 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#addRoomModal #background{
+  height: 100%;
+  width: 100%;
+  background-color : rgba(0,0,0, 0.5);
+}
+
+#side_menu ul {
+  display: inline-block;
+  overflow: hidden;
+  transition: 500ms;
+  list-style-type: none;
+  text-align: center;
+  list-style-position: inside;
+}
+
+#side_menu ul li{
+  overflow: hidden;
+  display: block;
+  transition: 500ms;
+  border-bottom: 5px;
+}
+
+#chat{
+  display: inline-flex;
+  vertical-align: top;
+  height: 100%;
+  width : 27%;
+  flex-direction: column;
+}
+
+#chat_window{
+  width: 100%;
+  flex-grow: 16;
+  vertical-align: top;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: stretch;
+}
+
+#chat_window ul{
+  list-style-type: none;
+  list-style-position: inside;
+}
+
+@keyframes appear {
+    from {opacity: 0;}
+    to {opacity  : 1;}
+}
+
+#chat_bubble_internal{
+  background-color: rgb(173, 216, 230);
+  display: inline-block;
+  border-radius: 5px;
+  align-self: flex-end;
+  margin-right: 10px;
+  width: 60%;
+  font-family: 'Roboto Condensed', sans-serif;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: opacity 4s;
+  white-space: normal;
+  animation-name: appear;
+  animation-duration: 500ms;
+  word-wrap: break-word;
+}
+
+#chat_bubble_external{
+  background-color: rgb(0,250,154);
+  display: inline-block;
+  border-radius: 5px;
+  align-self: flex-start;
+  margin-left: 10px;
+  width: 60%;
+  font-family: 'Roboto Condensed', sans-serif;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: opacity 4s;
+  white-space: normal;
+  animation-name: appear;
+  animation-duration: 500ms;
+  word-wrap: break-word;
+}
+
+#chat_bubble p {
+  margin: 10px;
+}
+
+#text_in{
+  flex-grow: 1;
+  display: block;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 15px;
+  font-family: 'Roboto Condensed', sans-serif;
+  border-radius: 5px;
+  background-color: rgb(0, 0, 0, .1);
+  border-color: black;
+  border: 0;
+  width: 85%;
+}
+
+
+#idea_box{
+  display: inline-block;
+  vertical-align: top;
+  background-color: tomato;
+  height: 100%;
+  position: relative;
+  flex-direction: column;
+  width: 27%;
+}
+
+#idea_text_area{
+  display: block;
+  position: absolute;
+  height: 8%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  border-radius: 5px;
+  background-color: rgb(0, 0, 0, .1);
+  margin-left: auto;
+  margin-right: auto;
+  width: 85%;
+}
+#idea_window{
+  overflow: scroll;
+  height: 92%;
+  width: 100%;
+}
+
+@keyframes open_height{
+  from{ height: 0;}
+  to  { height: 100px;}
+}
+#idea {
+  display: block;
+  position: relative;
+  width: 85%;
+  height: 110px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  overflow: hidden;
+  animation-name: appear, open_height;
+  animation-duration: 500ms;
+  background-color: rgb(245,245,220);
+}
+#idea i {
+  float: right;
+  margin: 10px;
+  color: red;
+}
+
+#idea i:hover{
+    background-color : rgba(88,88,88, 0.2);
+}
+
+#idea p {
+  position: absolute;
+  width: 85%;
+  border-radius: 5px;
+  height: 85%;
+  margin: 0;
+  word-wrap: break-word;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#vote_arrows{
+  float: right;
+  clear: both;
+  width: 40px;
+  height: 20px;
+}
+
+
+#plan{
+  display: inline-block;
+  vertical-align: top;
+  background-color: SpringGreen;
+  height: 100%;
+  width: 27%;
+}

@@ -1,0 +1,4 @@
+REVISION
+========
+comment will have a foreign key that references the chat_room associated with that
+comment
