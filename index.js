@@ -5,15 +5,59 @@ var server = require('http').Server(app);
 var io   = require('socket.io')(server);
 io.listen(server)
 
+// when User is created. a single instance of a database
+// connection is created. we can update our database via our
+// models we defined in the db folder.
+
+var User = require('./db/models/User')
+var Chat = require('./db/models/Chat')
+var Comment = require('./db/models/Comment')
+var ChatUserAuthentication = require('./db/models/ChatUserAuthentication')
+var IdeaBox  = require('./db/models/IdeaBox')
+var Plan     = require('./db/models/Plan')
+var IdeaBox_Plan = require('./db/models/IdeaBox_Plan')
+var Responsible = require('./db/models/Responsible')
+
+var user_table               = new User()
+var chat_table               = new Chat()
+var comment_table            = new Comment()
+var chat_user_authentication = new ChatUserAuthentication()
+var idea_box                 = new IdeaBox()
+var plan                     = new Plan()
+var idea_box_plan            = new IdeaBox_Plan()
+var responsible              = new Responsible()
+
+user_table.create_table()
+chat_table.create_table()
+comment_table.create_table()
+chat_user_authentication.create_table()
+idea_box.create_table()
+plan.create_table()
+idea_box_plan.create_table()
+responsible.create_table()
+
+//while(1){}
+// here we set up a server for the intention of facilitating
+// real time chat communication
+
+// We are trying to keep a list of clients so we can update
+// users online on the client, using the socket id as a key
+
+var clients = new Map()
+
+//var chatRooms = chat_table.retrieveChatRooms()
 
 io.on('connection', function(socket){
 
   console.log(`${socket.handshake.query.name}: has connected`)
+
   io.emit('user_connected', {user: socket.handshake.query.name})
+  clients.set(socket.id, socket.handshake.query.name )
 
   socket.on('disconnect', ()=>{
     console.log(`${socket.handshake.query.name}: has disconnected`)
     io.emit('user_disconnected', {user: socket.handshake.query.name})
+    clients.delete(socket.id)
   })
 
   socket.on('chat_message', (data)=>{
@@ -21,20 +65,18 @@ io.on('connection', function(socket){
     console.log(data)
     socket.broadcast.emit('chat_message', data)
   })
+
+  socket.on('recieved_update',(data)=>{
+    console.log('clients know that other clients exist')
+    var data_to_send = {}
+    clients.forEach((key, value, map)=>{
+      data_to_send[key] = value
+    })
+
+    console.log(data_to_send)
+    io.emit('update_users',data_to_send)
+  })
 });
-
-var User = require('./db/models/User')
-var Chat = require('./db/models/Chat')
-var Comment = require('./db/models/Comment')
-
-var user_table    = new User()
-var chat_table    = new Chat()
-var comment_table = new Comment()
-
-user_table.create_table();
-chat_table.create_table();
-comment_table.create_table();
-
 
 server.listen(port, ()=>{
   console.log(`listening on port ${port}`)

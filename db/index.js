@@ -6,7 +6,7 @@ pool_config = {
   database: 'Planning App',
   max: 20,
   port: 5432,
-  password: 'my_secret'
+  password: 'killerkill24'
 }
 
 pool = new Pool( pool_config )

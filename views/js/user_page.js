@@ -19,7 +19,8 @@ class Idea extends React.Component{
     super(props)
     this.state = {
       isClosed: false,
-      voteCount: 0
+      totalVoteCount: 0,
+      singleVoteCount: 0
     }
     this.delete    = this.delete.bind(this)
     this.vote_up   = this.vote_up.bind(this)
@@ -31,19 +32,25 @@ class Idea extends React.Component{
   }
 
   vote_up(e){
+    if(this.state.singleVoteCount < 1){
     var key = this.props.key_
     var value = this.props.vote(key, true)
     this.setState({
-      voteCount: value
+      totalVoteCount: value,
+      singleVoteCount: this.state.singleVoteCount + 1
     })
+  }
   }
 
   vote_down(e){
+    if((this.state.singleVoteCount > -1)){
     var key =this.props.key_
     var value = this.props.vote(key, false)
     this.setState({
-      voteCount: value
+      totalVoteCount: value,
+      singleVoteCount: this.state.singleVoteCount - 1
     })
+  }
   }
 
   render(){
@@ -52,7 +59,7 @@ class Idea extends React.Component{
       <i onClick={this.delete} className="fas fa-times red"></i>
       <div id="vote_arrows">
          <i onClick={this.vote_up} className="fas fa-chevron-up" style={{ color: "grey"}}></i>
-         { this.state.voteCount }
+         { this.state.totalVoteCount }
          <i onClick={this.vote_down} className="fas fa-chevron-down" style={{ color: "grey"}}></i>
       </div>
       <p>
@@ -146,6 +153,7 @@ class UserPage extends React.Component{
     this.state.socket = io({query: `name=${_data.user}`})
 
     this.state.socket.on('user_connected', (data)=>{
+
       if(this.state.users_online_arr.indexOf(data.user) >= 0){
         console.log('user is already online')
       }
@@ -158,6 +166,8 @@ class UserPage extends React.Component{
           this.setState({users_online:this.state.users_online})
         }
       }
+
+     this.state.socket.emit('recieved_update', {success: true})
     })
 
     this.state.socket.on('user_disconnected',(data)=>{
@@ -177,6 +187,35 @@ class UserPage extends React.Component{
     this.state.socket.on('chat_message',(data)=>{
       this.receiveText(data)
     })
+
+    this.state.socket.on('update_users',(data)=>{
+      var users_connected = Object.keys(data)
+      var userExists = false
+      var users_online_arr = Array.from(this.state.users_online_arr)
+      users_online_arr.push()
+
+      console.log('before')
+      console.log(this.state.users_online_arr)
+      for(let key of users_connected){
+        for(let user of this.state.users_online_arr){
+          if(user === key ){
+            userExists = true
+          }
+        }
+        if(!userExists && key !== this.state.user_information.username){
+          users_online_arr.push(key)
+          this.state.users_online.set(key, <li> <a id={key} href="#" > {key} </a> </li>)
+        }
+        userExists = false;
+      }
+      console.log('after')
+      console.log(users_online_arr)
+      this.setState({
+        users_online_arr : users_online_arr,
+        users_online: this.state.users_online
+      })
+    })
+
 
     this.setState({
       socket : this.state.socket

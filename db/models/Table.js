@@ -16,12 +16,11 @@ module.exports = class Table {
     var query1 = null
     var query2 = null
     for(let field of Object.keys(this.fields)){
-      if(this.fields[field].constraints[0] === 'FOREIGN KEY'){
 
+      if(this.fields[field].constraints[0] === 'FOREIGN KEY'){
         query1 = `ALTER TABLE ${this.table_name} ADD COLUMN ${field} ${this.fields[field].type}`
-        query2 = `ALTER TABLE ${this.table_name} ADD CONSTRAINT constraint_fk FOREIGN KEY (${field}) REFERENCES ${this.fields[field].references} ON DELETE CASCADE;`
-      }
-    }
+        query2 = `ALTER TABLE ${this.table_name} ADD CONSTRAINT constraint_fk_${field} FOREIGN KEY (${field}) REFERENCES ${this.fields[field].references} ON DELETE CASCADE;`
+
     if(query1 === null || query2 === null){
       return
     }
@@ -29,16 +28,18 @@ module.exports = class Table {
       try{
         await db.query(query1)
       }catch(e){
-        //console.log(e)
+      //  console.log(e)
       }finally{
         try{
           await db.query(query2)
         }
         catch(ex){
-          //console.log(ex)
+        //  console.log(ex)
         }
       }
     }
+  }
+}
   }
   /* Makes sure table exists if not create it it */
   async table_exists(){
@@ -66,7 +67,7 @@ module.exports = class Table {
       return result.rows
     }
     catch(e){
-      console.log(e)
+      //console.log(e)
       return e
     }
   }
@@ -88,6 +89,9 @@ module.exports = class Table {
       */
 
       for( let database_field of database_fields){
+        //console.log('database_field: ' + database_field)
+        //console.log('orm_field: ' + orm_field)
+        //console.log('\n')
         if(orm_field === database_field){
           isPresent = true
           break;
@@ -203,6 +207,8 @@ module.exports = class Table {
         var result = await db.query(table_def);
         return result;
       }catch(e){
+        console.log(table_def)
+        console.log(e)
         return e;
       }
     }
@@ -214,18 +220,21 @@ module.exports = class Table {
   }
 
   create_table_string(){
-      var fields_ = Object.keys(this.fields)
-      var inner = '';
-      for (let field of fields_){
-        inner = inner + field + ' ' + this.fields[field].type
-        for (let constraint of this.fields[field].constraints){
-        inner = inner + ' ' + constraint
-        }
-        inner = inner + ",\n"
-      }
+    var fields_ = Object.keys(this.fields)
+    var inner = '';
+    for (let field of fields_){
 
-      var str = `CREATE TABLE ${this.table_name}(` + inner +')'
-      str = str.substring(0, str.length-3) +')'
-      return str
+      inner = inner + field + ' ' + this.fields[field].type
+      for (let constraint of this.fields[field].constraints){
+        if(!(constraint === 'FOREIGN KEY' || constraint === 'PRIMARY KEY')){
+          inner = inner + ' ' + constraint
+        }
+      }
+      inner = inner + ",\n"
+    }
+
+    var str = `CREATE TABLE ${this.table_name}(` + inner +')'
+    str = str.substring(0, str.length-3) +')'
+    return str
   }
 }
